@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skillhall – Campus skill exchange</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <h1>Skillhall</h1>
+    <span class="tag">Campus skill exchange</span>
+  </div>
+  <nav id="nav">
+    <button data-page="login" class="active"><span>◈</span> Login / Register</button>
+    <button data-page="profile"><span>▤</span> Profile</button>
+    <button data-page="find"><span>◎</span> Find Skills</button>
+    <button data-page="matches"><span>⇄</span> Recommended Matches</button>
+    <button data-page="requests"><span>✉</span> Skill Requests</button>
+    <button data-page="database"><span>▭</span> Database (Excel)</button>
+    <button data-page="dashboard"><span>▦</span> Dashboard</button>
+  </nav>
+  <div class="who" id="who"></div>
+</aside>
+
+<main>
+  <div id="toast" class="toast"></div>
+
+  <!-- LOGIN / REGISTER -->
+  <section id="page-login" class="page active">
+    <div class="hero">
+      <div>
+        <h2 class="display">Trade what you know. Learn what you don't.</h2>
+        <p class="lead">Skillhall matches students who can teach each other — no fees, no courses, just classmates swapping what they're good at.</p>
+        <div class="pills">
+          <span class="pill">🐍 Python <i>⇄</i> 🎨 Photoshop</span>
+          <span class="pill">📊 Excel <i>⇄</i> 🗣 Public Speaking</span>
+        </div>
+      </div>
+
+      <div class="card accent">
+        <h3>Create your profile</h3>
+        <form id="registerForm">
+          <label>Full name<input name="name" placeholder="e.g. Gnaneshwar S" required></label>
+          <label>Department<input name="department" list="depts" placeholder="e.g. Mechanical Engineering — type or pick">
+            <datalist id="depts">
+              <option>Computer Science</option><option>Information Technology</option>
+              <option>Electronics</option><option>Electrical Engineering</option>
+              <option>Mechanical Engineering</option><option>Civil Engineering</option>
+              <option>Commerce</option><option>Arts &amp; Science</option>
+            </datalist>
+          </label>
+          <label>Year
+            <select name="year"><option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option></select>
+          </label>
+          <label>College email<input name="email" type="email" placeholder="you@college.edu" required></label>
+          <label>Phone / WhatsApp<input name="phone" placeholder="Shared with students who contact you"></label>
+          <div class="row">
+            <button class="btn dark" type="submit">Create profile</button>
+            <button class="btn light" type="button" id="demoBtn">Continue as demo student</button>
+          </div>
+        </form>
+        <hr>
+        <form id="loginForm" class="inline">
+          <label>Already registered?<input name="email" type="email" placeholder="Login with your email" required></label>
+          <button class="btn light" type="submit">Login</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROFILE -->
+  <section id="page-profile" class="page">
+    <h2 class="title">My profile</h2>
+    <div class="need-login">Please login or register first.</div>
+    <div class="grid2 when-login">
+      <div class="card">
+        <h3 id="pName"></h3>
+        <p class="muted" id="pMeta"></p>
+        <p id="pContact"></p>
+        <form id="bioForm">
+          <label>Short bio<textarea name="bio" rows="3" placeholder="Tell others what you're passionate about"></textarea></label>
+          <label>Phone / WhatsApp<input name="phone"></label>
+          <button class="btn dark" type="submit">Save changes</button>
+        </form>
+      </div>
+      <div class="card">
+        <h3>Add a skill</h3>
+        <form id="skillForm">
+          <label>I want to…
+            <select name="type"><option value="teach">Teach this skill</option><option value="learn">Learn this skill</option></select>
+          </label>
+          <label>Skill<input name="skill" placeholder="e.g. Python, Photoshop, Excel" required></label>
+          <label>Level
+            <select name="level"><option>Beginner</option><option selected>Intermediate</option><option>Advanced</option></select>
+          </label>
+          <label>Details<textarea name="description" rows="2" placeholder="What can you cover? When are you free?"></textarea></label>
+          <button class="btn amber" type="submit">Add skill</button>
+        </form>
+      </div>
+    </div>
+    <div class="when-login">
+      <h3 class="sub">I can teach</h3><div class="chips" id="teachList"></div>
+      <h3 class="sub">I want to learn</h3><div class="chips" id="learnList"></div>
+    </div>
+  </section>
+
+  <!-- FIND SKILLS -->
+  <section id="page-find" class="page">
+    <h2 class="title">Find skills</h2>
+    <input class="search" id="searchBox" placeholder="Search a skill, topic, name or department…">
+    <div class="cards" id="findResults"></div>
+  </section>
+
+  <!-- MATCHES -->
+  <section id="page-matches" class="page">
+    <h2 class="title">Recommended matches</h2>
+    <p class="muted">Students who teach what you want to learn. ⇄ means they also want something you can teach.</p>
+    <div class="need-login">Please login or register first.</div>
+    <div class="cards" id="matchResults"></div>
+  </section>
+
+  <!-- REQUESTS -->
+  <section id="page-requests" class="page">
+    <h2 class="title">Skill requests</h2>
+    <div class="need-login">Please login or register first.</div>
+    <div class="grid2 when-login">
+      <div><h3 class="sub">Received</h3><div id="inbox"></div></div>
+      <div><h3 class="sub">Sent</h3><div id="sent"></div></div>
+    </div>
+  </section>
+
+  <!-- DATABASE -->
+  <section id="page-database" class="page">
+    <h2 class="title">Database (Excel)</h2>
+    <p class="muted">All data lives in <code>data/skillhall.xlsx</code>. Every sheet below is one table.</p>
+    <a class="btn dark" href="/api/download">⬇ Download skillhall.xlsx</a>
+    <div id="dbTables"></div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="page-dashboard" class="page">
+    <h2 class="title">Dashboard</h2>
+    <div class="stats" id="stats"></div>
+    <h3 class="sub">Most offered skills</h3>
+    <div class="card" id="topSkills"></div>
+  </section>
+
+  <!-- Request modal -->
+  <div class="modal" id="modal">
+    <div class="card">
+      <h3 id="mTitle">Send request</h3>
+      <textarea id="mMsg" rows="4" placeholder="Hi! I'd love to learn this from you. I'm free on…"></textarea>
+      <div class="row">
+        <button class="btn dark" id="mSend">Send request</button>
+        <button class="btn light" id="mCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
